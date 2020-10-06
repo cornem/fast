@@ -1,7 +1,7 @@
 import { attr, observable } from "@microsoft/fast-element";
 import { FormAssociated } from "../form-associated/index";
-import { Option } from './option';
-import { wrapInBounds, KeyCodes } from '@microsoft/fast-web-utilities';
+import { Option } from "./option";
+import { wrapInBounds, KeyCodes } from "@microsoft/fast-web-utilities";
 import { StartEnd } from "../patterns/start-end";
 import { applyMixins } from "../utilities/apply-mixins";
 
@@ -14,7 +14,6 @@ export class Select extends FormAssociated<HTMLInputElement> {
     public multiple: boolean;
 
     @attr({ attribute: "open", mode: "boolean" })
-
     @observable
     public open: boolean;
     private openChanged() {
@@ -85,21 +84,19 @@ export class Select extends FormAssociated<HTMLInputElement> {
         this.updateForm();
     }
 
-    private updateForm(): void {
-    }
+    private updateForm(): void {}
 
-    
     public keypressHandlerButton = (e: KeyboardEvent): void => {
         super.keypressHandler(e);
         switch (e.keyCode) {
             case KeyCodes.space:
                 this.open = !this.open;
-                console.log("Call one")
+                console.log("Call one");
                 setTimeout(() => this.setFocusOnOption(), 0);
                 break;
             case KeyCodes.enter:
                 this.open = !this.open;
-                console.log("Call two")
+                console.log("Call two");
                 setTimeout(() => this.setFocusOnOption(), 0);
                 e.preventDefault(); // Enter also causes 'click' to fire for <button>s.  Prevent that so we don't immediately revert the change to this.open.
                 break;
@@ -107,33 +104,33 @@ export class Select extends FormAssociated<HTMLInputElement> {
                 this.setFocusOnOption();
                 break;
         }
-    }
+    };
 
     /**
      * Handle keyboard interactions for listbox
      */
     public keypressHandlerListbox = (e: KeyboardEvent): void => {
         super.keypressHandler(e);
-        
+
         // Don't scroll the page for arrow keys, and spacebar.
         e.preventDefault();
         switch (e.keyCode) {
             case KeyCodes.arrowDown:
-                this.adjust(1)
+                this.adjust(1);
                 break;
             case KeyCodes.arrowUp:
-                this.adjust(-1)
+                this.adjust(-1);
                 break;
             case KeyCodes.enter:
                 this.value = this.options[this.activeOptionIndex].value;
-                console.log("Fire Enter", this.activeOptionIndex)
+                console.log("Fire Enter", this.activeOptionIndex);
                 this.options[this.activeOptionIndex].checked = true;
                 this.optionSelectionChange(this.options[this.activeOptionIndex].value);
                 break;
             case KeyCodes.escape:
-                this.options[this.activeOptionIndex].removeAttribute('current');
+                this.options[this.activeOptionIndex].removeAttribute("current");
                 this.open = !this.open;
-                console.log("Call three")
+                console.log("Call three");
                 break;
             // Handle type ahead mode
             default:
@@ -154,9 +151,12 @@ export class Select extends FormAssociated<HTMLInputElement> {
     public focusoutHandlerListbox = (e: FocusEvent): void => {
         const elementReceivingFocus = e.relatedTarget as HTMLElement;
         if (this.listbox === undefined) {
-            return
+            return;
         }
-        if (this.open && (!elementReceivingFocus || !this.listbox[0].contains(elementReceivingFocus))) {
+        if (
+            this.open &&
+            (!elementReceivingFocus || !this.listbox[0].contains(elementReceivingFocus))
+        ) {
             this.open = false;
         }
     };
@@ -181,7 +181,7 @@ export class Select extends FormAssociated<HTMLInputElement> {
                 }
             });
         }
-    }
+    };
 
     /**
      * Will set focus to the necessary element
@@ -189,12 +189,12 @@ export class Select extends FormAssociated<HTMLInputElement> {
      */
     public setFocusOnOption = (optionToFocus = null): void => {
         //this.getFirstSelectedOption();
-        if(this.open) {
+        if (this.open) {
             console.log("Calls");
             this.getFirstSelectedOption();
             this.options[this.activeOptionIndex].focus();
         }
-    }
+    };
 
     public adjust(adjustment: number): void {
         this.activeOptionIndex = wrapInBounds(
@@ -206,16 +206,16 @@ export class Select extends FormAssociated<HTMLInputElement> {
     }
 
     public updateButtonPartAttr(): void {
-        if(!this.button) {
-            return
+        if (!this.button) {
+            return;
         }
 
-        switch(this.open) {
+        switch (this.open) {
             case true:
-                this.button.setAttribute('aria-expanded', 'true');
+                this.button.setAttribute("aria-expanded", "true");
                 break;
             case false:
-                this.button.setAttribute('aria-expanded', 'false');
+                this.button.setAttribute("aria-expanded", "false");
                 break;
         }
     }
@@ -232,11 +232,11 @@ export class Select extends FormAssociated<HTMLInputElement> {
     }
 
     private getFirstSelectedOption(): Option | null {
-        const selectedOption: Option | undefined = this.options.find(x => x.checked)
+        const selectedOption: Option | undefined = this.options.find(x => x.checked);
         if (selectedOption) {
             this.activeOptionIndex = Array.from(this.options).indexOf(selectedOption);
         }
-        return selectedOption || null
+        return selectedOption || null;
     }
 
     /**
@@ -249,20 +249,20 @@ export class Select extends FormAssociated<HTMLInputElement> {
     public optionSelectionChange(value: string): void {
         this.handleMultiple(value);
 
-        this.options.forEach(element  => {
+        this.options.forEach(element => {
             if (element.value != value) {
                 const el: any = element;
-                el.removeAttribute('current');
+                el.removeAttribute("current");
                 this.activeOptionIndex = Array.from(this.options).indexOf(element);
             }
         });
 
         this.updateSelectValue(value);
-        this.typeAheadValue = '';
+        this.typeAheadValue = "";
         this.open = !this.open;
-        console.log("Call six")
+        console.log("Call six");
         // Focus back on the select when menu closes
-        this.button.focus()
+        this.button.focus();
     }
 
     /**
@@ -270,9 +270,9 @@ export class Select extends FormAssociated<HTMLInputElement> {
      * functionality that is tied to the given part still function as designed
      */
     public registerButtonSlotChange(): void {
-        let slot = this.shadowRoot!.querySelector('slot[name=button-container]');
+        let slot = this.shadowRoot!.querySelector("slot[name=button-container]");
         if (slot) {
-            slot.addEventListener('slotchange', () => {
+            slot.addEventListener("slotchange", () => {
                 this.applyButtonControllerCode();
             });
         }
@@ -280,14 +280,14 @@ export class Select extends FormAssociated<HTMLInputElement> {
 
     private applyButtonControllerCode(): void {
         if (this.button) {
-            console.log("This hits", this.button)
-            this.button.setAttribute('tabindex', '0');
-            this.button.setAttribute('aria-haspopup', 'listbox');
-            this.button.setAttribute('aria-expanded', this.open ? 'true' : 'false');
-            this.button.setAttribute('role', 'button');
+            console.log("This hits", this.button);
+            this.button.setAttribute("tabindex", "0");
+            this.button.setAttribute("aria-haspopup", "listbox");
+            this.button.setAttribute("aria-expanded", this.open ? "true" : "false");
+            this.button.setAttribute("role", "button");
 
-            this.button.addEventListener('click', this.clickHandler);
-            this.button.addEventListener('keydown', this.keypressHandlerButton);
+            this.button.addEventListener("click", this.clickHandler);
+            this.button.addEventListener("keydown", this.keypressHandlerButton);
         }
     }
 
@@ -296,11 +296,11 @@ export class Select extends FormAssociated<HTMLInputElement> {
             listbox.setAttribute("role", "listbox");
             listbox.addEventListener("keydown", this.keypressHandlerListbox);
             listbox.addEventListener("focusout", this.focusoutHandlerListbox);
-        })
+        });
     }
 
     private regexEscape(str) {
-        return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
+        return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
     }
 
     /**
@@ -308,10 +308,10 @@ export class Select extends FormAssociated<HTMLInputElement> {
      * Consecutive keystrokes are batched into a buffer of search text used
      * to match against the set of options.  If TYPE_AHEAD_TIMEOUT_MS passes
      * between consecutive keystrokes, the search restarts.
-     * 
+     *
      * @param typedKey
      */
-    private typeAheadValue: string = '';
+    private typeAheadValue: string = "";
     private typeAheadTimeoutHandler: number = -1;
     private typeAheadExpired: boolean = false;
     private static readonly TYPE_AHEAD_TIMEOUT_MS = 1000;
@@ -324,7 +324,7 @@ export class Select extends FormAssociated<HTMLInputElement> {
         }, Select.TYPE_AHEAD_TIMEOUT_MS);
 
         if (this.typeAheadExpired) {
-            this.typeAheadValue = '';
+            this.typeAheadValue = "";
         }
 
         this.typeAheadValue = `${this.typeAheadValue}${typedKey}`;
@@ -336,8 +336,8 @@ export class Select extends FormAssociated<HTMLInputElement> {
         // from the top of the list. If we're in the middle of a search,
         // continue matching against the currently focused option before moving
         // on to the next option.
-        let optionsForSearch =
-            this.options.slice(focusedIndex + searchStartOffset, this.options.length)
+        let optionsForSearch = this.options
+            .slice(focusedIndex + searchStartOffset, this.options.length)
             .concat(this.options.slice(0, focusedIndex + searchStartOffset));
 
         let pattern = `^(${this.regexEscape(this.typeAheadValue)})`;
@@ -350,7 +350,7 @@ export class Select extends FormAssociated<HTMLInputElement> {
             // Chromium/Firefox's native <select>s ignore whitespace at the
             // beginning/end of the visible text when matching, so trim()
             // the search text to align with that behavior.
-            const element: any = option
+            const element: any = option;
             let matches = element.innerText.trim().match(re);
 
             if (matches) {
@@ -369,6 +369,5 @@ export class Select extends FormAssociated<HTMLInputElement> {
  * TODO: https://github.com/microsoft/fast/issues/3317
  * @internal
  */
-/* eslint-disable-next-line */
 export interface Select extends StartEnd {}
 applyMixins(Select, StartEnd);

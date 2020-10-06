@@ -276,9 +276,8 @@ export class Tabs extends FASTElement {
                 this.activeIndicatorRef.style.transform = "translateX(0px)";
                 this.activeIndicatorRef.classList.remove("activeIndicatorTransition");
                 if (this.isHorizontal()) {
-                    this.activeIndicatorRef.style.gridColumn = `${
-                        this.activeTabIndex + 1
-                    }`;
+                    this.activeIndicatorRef.style.gridColumn = `${this.activeTabIndex +
+                        1}`;
                 } else {
                     this.activeIndicatorRef.style.gridRow = `${this.activeTabIndex + 1}`;
                 }
@@ -356,6 +355,5 @@ export class Tabs extends FASTElement {
  * TODO: https://github.com/microsoft/fast/issues/3317
  * @internal
  */
-/* eslint-disable-next-line */
 export interface Tabs extends StartEnd {}
 applyMixins(Tabs, StartEnd);
