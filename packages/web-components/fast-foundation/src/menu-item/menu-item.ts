@@ -14,7 +14,7 @@ export enum MenuItemRole {
 }
 
 /**
- * A Switch Custom HTML Element.
+ * A Menu Item Custom HTML Element.
  * Implements {@link https://www.w3.org/TR/wai-aria-1.1/#menuitem | ARIA menuitem }, {@link https://www.w3.org/TR/wai-aria-1.1/#menuitemcheckbox | ARIA menuitemcheckbox}, or {@link https://www.w3.org/TR/wai-aria-1.1/#menuitemradio | ARIA menuitemradio }.
  *
  * @public
