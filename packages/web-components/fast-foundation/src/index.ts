@@ -11,6 +11,7 @@ export * from "./dialog/index";
 export * from "./divider/index";
 export * from "./form-associated/index";
 export * from "./flipper/index";
+export * from "./listbox/index";
 export * from "./menu/index";
 export * from "./menu-item/index";
 export * from "./option/index";
