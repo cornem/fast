@@ -6,3 +6,5 @@ dist
 
 # Never lint coverage output
 coverage
+
+*.spec.ts

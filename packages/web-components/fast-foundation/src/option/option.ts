@@ -1,4 +1,5 @@
 import { attr, FASTElement, observable } from "@microsoft/fast-element";
+import { keyCodeArrowDown, keyCodeEnter } from "@microsoft/fast-web-utilities";
 
 /**
  * An Option Custom HTML Element.
@@ -111,12 +112,9 @@ export class Option extends FASTElement {
         super();
         this.addEventListener("focus", this.handleFocus);
         this.addEventListener("blur", this.handleBlur);
-        // @focus="${(x, c) => x.handleFocus(c.event as FocusEvent)}"
-        // @blur="${(x, c) => x.handleBlur(c.event as FocusEvent)}"
     }
 
     public handleBlur = (e: FocusEvent): void => {
-        console.log(e.target, e.currentTarget);
         if (e.target !== e.currentTarget) {
             return;
         }

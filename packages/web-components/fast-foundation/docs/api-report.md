@@ -418,18 +418,30 @@ export function isDesignSystemConsumer(element: HTMLElement | DesignSystemConsum
 // @public
 export function isTreeItemElement(el: Element): el is HTMLElement;
 
-// @public (undocumented)
+// @public
 export class Listbox extends FASTElement {
     constructor();
     // (undocumented)
-    clickHandler: (e: MouseEvent) => void;
+    activeDescendent: string;
+    // Warning: (ae-forgotten-export) The symbol "ListboxMouseEvent" needs to be exported by the entry point index.d.ts
+    //
     // (undocumented)
-    defaultSlottedNodes: Node[];
+    clickHandler: (e: ListboxMouseEvent) => void;
+    disabled: boolean;
     // (undocumented)
-    keypressHandler: (e: KeyboardEvent) => void;
-}
+    focusable: boolean;
+    // (undocumented)
+    handleBlur: (e: FocusEvent) => void;
+    // (undocumented)
+    handleFocus: (e: Event) => void;
+    // @internal (undocumented)
+    items: Element[];
+    // (undocumented)
+    keydownHandler: (e: KeyboardEvent) => void;
+    readOnly: boolean;
+    }
 
-// @public (undocumented)
+// @public
 export const ListboxTemplate: import("@microsoft/fast-element").ViewTemplate<Listbox, any>;
 
 // @public
@@ -509,34 +521,35 @@ export const MenuItemTemplate: import("@microsoft/fast-element").ViewTemplate<Me
 // @public
 export const MenuTemplate: import("@microsoft/fast-element").ViewTemplate<Menu, any>;
 
-// Warning: (ae-incompatible-release-tags) The symbol "Option" is marked as @public, but its signature references "FormAssociated" which is marked as @alpha
-//
-// @public (undocumented)
-class Option_2 extends FormAssociated<HTMLInputElement> {
+// @public
+class Option_2 extends FASTElement {
     constructor();
-    checked: boolean;
-    // (undocumented)
-    checkedAttribute: boolean;
-    // (undocumented)
-    clickHandler: (e: MouseEvent) => void;
-    // (undocumented)
+    // @internal (undocumented)
     connectedCallback(): void;
-    // (undocumented)
-    defaultChecked: boolean;
+    defaultSelected: boolean;
     // (undocumented)
     defaultSlottedNodes: Node[];
+    disabled: boolean;
     // (undocumented)
-    protected proxy: HTMLInputElement;
+    focusable: boolean;
     // (undocumented)
+    handleBlur: (e: FocusEvent) => void;
+    // (undocumented)
+    handleFocus: (e: Event) => void;
+    // (undocumented)
+    handleOptionKeyDown(e: KeyboardEvent): void;
     readOnly: boolean;
+    selected: boolean;
+    selectedAttribute: boolean;
     value: string;
+    valueAttribute: string;
     // (undocumented)
     valueChanged(): void;
 }
 
 export { Option_2 as Option }
 
-// @public (undocumented)
+// @public
 export const OptionTemplate: import("@microsoft/fast-element").ViewTemplate<Option_2, any>;
 
 // @public
@@ -610,7 +623,7 @@ export const RadioTemplate: import("@microsoft/fast-element").ViewTemplate<Radio
 // Warning: (ae-incompatible-release-tags) The symbol "Select" is marked as @public, but its signature references "FormAssociated" which is marked as @alpha
 // Warning: (ae-internal-mixed-release-tag) Mixed release tags are not allowed for "Select" because one of its declarations is marked as @internal
 //
-// @public (undocumented)
+// @public
 export class Select extends FormAssociated<HTMLInputElement> {
     constructor();
     // (undocumented)
@@ -659,7 +672,7 @@ export class Select extends FormAssociated<HTMLInputElement> {
 export interface Select extends StartEnd {
 }
 
-// @public (undocumented)
+// @public
 export const SelectTemplate: import("@microsoft/fast-element").ViewTemplate<Select, any>;
 
 // @public

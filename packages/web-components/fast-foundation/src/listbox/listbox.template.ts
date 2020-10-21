@@ -1,4 +1,4 @@
-import { html, slotted } from "@microsoft/fast-element";
+import { elements, html, slotted } from "@microsoft/fast-element";
 import { Listbox } from "./listbox";
 
 /**
@@ -11,9 +11,14 @@ export const ListboxTemplate = html<Listbox>`
         aria-activedescendent="${x => (x.activeDescendent ? x.activeDescendent : null)}"
         aria-disabled="${x => x.disabled}"
         aria-readonly="${x => x.readOnly}"
-        tabindex="${x => (x.disabled ? null : 0)}"
         @blur="${(x, c) => x.handleBlur(c.event as FocusEvent)}"
     >
-        <slot ${slotted("items")}></slot>
+        <slot
+            ${slotted({
+                property: "items",
+                flatten: true,
+                filter: elements("fast-option"),
+            })}
+        ></slot>
     </template>
 `;

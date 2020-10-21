@@ -46,11 +46,19 @@ export class Listbox extends FASTElement {
             return;
         }
 
-        this.listboxItems.forEach(el => (el.selected = false));
-
         const focusedOption = this.listboxItems[newValue];
+        if (!focusedOption) {
+            return;
+        }
+
+        this.listboxItems.forEach(el => {
+            el.selected = false;
+            el.removeAttribute("tabindex");
+        });
+
         focusedOption.selected = true;
         this.activeDescendent = focusedOption.id;
+        focusedOption.setAttribute("tabindex", "0");
         focusedOption.focus();
     }
 
@@ -77,7 +85,7 @@ export class Listbox extends FASTElement {
     /**
      * @internal
      */
-    private listboxItems: Option[];
+    public listboxItems: Option[];
 
     /**
      * @internal
@@ -93,6 +101,7 @@ export class Listbox extends FASTElement {
         if (!this.$fastController.isConnected) {
             return;
         }
+
         this.listboxItems = newValue.filter(
             (n: Option) =>
                 n.nodeType === Node.ELEMENT_NODE &&
@@ -103,30 +112,55 @@ export class Listbox extends FASTElement {
         this.setupOptions();
     }
 
+    public connectedCallback() {
+        super.connectedCallback();
+        this.addEventListener("keydown", this.keydownHandler);
+        this.addEventListener("click", this.clickHandler);
+        // this.addEventListener("keypress", this.keypressHandler);
+        this.addEventListener("focusout", this.focusOutHandler);
+        // this.addEventListener("blur", this.focusOutHandler);
+        this.addEventListener("focusin", this.handleFocus);
+    }
+
+    public focus(): void {
+        this.focusable = true;
+        const focusedOption = this.getFocusedOption();
+        focusedOption.focus();
+    }
+
     private setupOptions(): void {
         this.listboxItems.forEach((o, i) => (o.id = `option-${i}`));
         this.focusedOptionIndex = 0;
     }
 
-    constructor() {
-        super();
-        this.addEventListener("keydown", this.keydownHandler);
-        this.addEventListener("click", this.clickHandler);
-        this.addEventListener("keypress", this.keypressHandler);
-        this.addEventListener("focusout", this.focusOutHandler);
-        this.addEventListener("focusin", this.handleFocus);
-    }
-
     private focusOutHandler = (e: FocusEvent) => {
-        console.log(e);
+        if (!e.relatedTarget) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        this.focusable = false;
     };
 
-    private keypressHandler = (e: KeyboardEvent): void => {
-        const captured: Option | null = e.target as Option;
-        if (captured) {
-            captured.setAttribute("tabindex", captured.selected ? "0" : "-1");
+    public keypressHandler(e: KeyboardEvent): void {
+        if (!this.$fastController.isConnected) {
+            return;
         }
-    };
+
+        let captured: Option | null = e.target as Option;
+
+        if (!this.listboxItems.includes(captured)) {
+            captured = this.getFocusedOption();
+        }
+
+        if (captured) {
+            if (captured.selected) {
+                captured.setAttribute("tabindex", "0");
+                return;
+            }
+            captured.removeAttribute("tabindex");
+            // captured.setAttribute("tabindex", captured.selected ? "0" : "-1");
+        }
+    }
 
     public handleFocus = (e: Event): void => {
         if (e.target !== e.currentTarget) {
@@ -134,15 +168,9 @@ export class Listbox extends FASTElement {
         }
 
         // this.$emit("selected-change", e);
-
-        this.focusable = true;
-
-        const focusedOption = this.getFocusedOption();
-
-        focusedOption.focus();
     };
 
-    private getFocusedOption() {
+    private getFocusedOption(): Option {
         return this.listboxItems[this.focusedOptionIndex || 0];
     }
 
@@ -154,13 +182,12 @@ export class Listbox extends FASTElement {
         this.focusable = false;
     };
 
-    public keydownHandler = (e: KeyboardEvent) => {
+    public keydownHandler(e: KeyboardEvent) {
         if (!e.key) {
             return;
         }
 
         const keyCode = e.key || e.key.charCodeAt(0);
-        console.log(keyCode);
 
         switch (keyCode) {
             case "Enter":
@@ -169,25 +196,52 @@ export class Listbox extends FASTElement {
                 break;
 
             case "ArrowUp":
-                e.preventDefault();
-                // moves focus to the previous option in the listbox
-                if (this.focusedOptionIndex > 0) {
-                    this.focusedOptionIndex -= 1;
-                }
-                break;
+            case "ArrowLeft":
+                return this.selectPreviousOption(e);
 
             case "ArrowDown":
-                e.preventDefault();
-                // moves focus to the next option in the listbox
-                if (this.focusedOptionIndex < this.listboxItemsCount - 1) {
-                    this.focusedOptionIndex += 1;
-                }
-                break;
+            case "ArrowRight":
+                return this.selectNextOption(e);
+
+            case "Home":
+                return this.selectFirstOption(e);
+
+            case "End":
+                return this.selectLastOption(e);
 
             default:
                 return;
         }
-    };
+    }
+
+    private selectFirstOption(e: KeyboardEvent) {
+        e.stopPropagation();
+        this.focusedOptionIndex = 0;
+    }
+
+    private selectLastOption(e: KeyboardEvent) {
+        e.stopPropagation();
+        this.focusedOptionIndex = this.listboxItemsCount - 1;
+    }
+
+    private selectPreviousOption(e: KeyboardEvent) {
+        e.stopPropagation();
+        // moves focus to the previous option in the listbox
+        if (this.focusedOptionIndex > 0) {
+            this.focusedOptionIndex -= 1;
+        }
+    }
+
+    /**
+     * Moves focus to the next option in the listbox
+     * @internal
+     */
+    private selectNextOption(e: KeyboardEvent) {
+        e.stopPropagation();
+        if (this.focusedOptionIndex < this.listboxItemsCount - 1) {
+            this.focusedOptionIndex += 1;
+        }
+    }
 
     public clickHandler = (e: ListboxMouseEvent): void => {
         const captured = e.target.closest("[role='option']");

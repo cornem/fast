@@ -1,14 +1,30 @@
 import { css } from "@microsoft/fast-element";
-import { display, focusVisible } from '@microsoft/fast-foundation';
-import { accentFillActiveBehavior, accentFillHoverBehavior, accentFillRestBehavior, neutralFillInputActiveBehavior, neutralFillInputHoverBehavior, neutralFillInputRestBehavior, neutralFocusBehavior, neutralForegroundRestBehavior } from '..';
-import { heightNumber, elevation } from '../styles';
+import { display, focusVisible } from "@microsoft/fast-foundation";
+import {
+    accentFillActiveBehavior,
+    accentFillHoverBehavior,
+    accentFillRestBehavior,
+    neutralFillInputActiveBehavior,
+    neutralFillInputHoverBehavior,
+    neutralFillInputRestBehavior,
+    neutralFocusBehavior,
+    neutralForegroundRestBehavior,
+} from "../styles/recipes";
+import { heightNumber } from "../styles/size";
+import { elevation } from "../styles/elevation";
 
 export const SelectStyles = css`
-    ${display("inline-block")} :host {
+    ${display("inline-block")}
+
+    :host {
         position: relative;
         width: 250px;
         color: ${neutralForegroundRestBehavior.var};
         --elevation: 14;
+    }
+
+    :host([open]) {
+        z-index: 10;
     }
 
     :host(:${focusVisible}) .button {
@@ -16,6 +32,13 @@ export const SelectStyles = css`
             neutralFocusBehavior.var
         };
         border-color: ${neutralFocusBehavior.var};
+    }
+
+    .listbox {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
     }
 
     .button {
@@ -57,22 +80,29 @@ export const SelectStyles = css`
         margin-inline-start: auto;
     }
 
-    :host .start,
-    :host .end,
-    :host ::slotted(svg) {
-        fill: ${neutralForegroundRestBehavior.var};
+    .start,
+    .end,
+    .indicator svg,
+    ::slotted(svg) {
     }
 
     .start,
     .end,
+    .indicator,
     ::slotted(svg) {
-        ${
-            /* Glyph size and margin-left is temporary - 
-            replace when adaptive typography is figured out */ ""
-        } width: 16px;
+        ${`` /* Glyph size is temporary - replace when glyph-size var is added */}
+        fill: ${neutralForegroundRestBehavior.var};
         height: 16px;
+        width: 16px;
     }
 
 `.withBehaviors(
-    accentFillActiveBehavior, accentFillHoverBehavior, accentFillRestBehavior, neutralFillInputActiveBehavior, neutralFillInputHoverBehavior, neutralFillInputRestBehavior, neutralFocusBehavior, neutralForegroundRestBehavior
+    accentFillActiveBehavior,
+    accentFillHoverBehavior,
+    accentFillRestBehavior,
+    neutralFillInputActiveBehavior,
+    neutralFillInputHoverBehavior,
+    neutralFillInputRestBehavior,
+    neutralFocusBehavior,
+    neutralForegroundRestBehavior
 );
